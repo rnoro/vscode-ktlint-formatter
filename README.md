@@ -2,36 +2,41 @@
 
 A zero-configuration VS Code extension that formats Kotlin code using ktlint. No setup required - just install and start formatting!
 
-## ✨ Features
+## Features
 
-- 🚀 **Zero Configuration**: No ktlint installation or setup needed
-- 📦 **Automatic Setup**: Downloads ktlint (v1.8.0) automatically on first use
-- 🎯 **Native Integration**: Works with VS Code's built-in formatting commands
-- 📝 **Kotlin Standard**: Follows the official Kotlin coding conventions
-- 📜 **Script Support**: Formats both `.kt` and `.kts` files
-- ✅ **Status Notifications**: Visual feedback on formatting success/failure
+- **Zero Configuration**: No ktlint installation or setup needed
+- **Automatic Setup**: Downloads ktlint (v1.8.0) automatically on first use
+- **Native Integration**: Works with VS Code's built-in formatting commands
+- **Kotlin Standard**: Follows the official Kotlin coding conventions
+- **Script Support**: Formats both `.kt` and `.kts` files
+- **Status Notifications**: Visual feedback on formatting success/failure
 
-## 📥 Installation
+## Installation
+
+### From VS Code Marketplace
+
+1. Open VS Code
+2. Go to Extensions (`Ctrl+Shift+X` or `Cmd+Shift+X` on Mac)
+3. Search for "Ktlint Formatter"
+4. Click "Install"
+
+Or install directly from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=rnoro.vscode-ktlint-formatter)
+
+**Command Line:**
+
+```bash
+code --install-extension rnoro.vscode-ktlint-formatter
+```
 
 ### From GitHub Releases
 
-1. Download the latest `.vsix` file from [Releases](https://github.com/rnoro/vscode-ktlint-formatter/releases)
-2. Open VS Code
-3. Press `Ctrl+Shift+P` (or `Cmd+Shift+P` on Mac)
-4. Type "Install from VSIX" and select it
-5. Choose the downloaded `.vsix` file
-
-**Command Line:**
+Alternatively, download the latest `.vsix` file from [Releases](https://github.com/rnoro/vscode-ktlint-formatter/releases) and install it manually:
 
 ```bash
 code --install-extension vscode-ktlint-formatter-0.1.0.vsix
 ```
 
-### From VS Code Marketplace
-
-_Coming soon!_
-
-## 🎨 Usage
+## Usage
 
 ### Manual Formatting
 
@@ -57,19 +62,19 @@ Add to your VS Code `settings.json`:
 }
 ```
 
-## 📋 Requirements
+## Requirements
 
 - **VS Code**: 1.85.0 or later
 - **Java Runtime**: Required to execute ktlint (check with `java -version`)
 
-## 🔧 How It Works
+## How It Works
 
 1. Extension activates when you open a Kotlin file
 2. On first use, ktlint binary (v1.8.0) is downloaded automatically
 3. Formatting requests are processed through ktlint
 4. Results are applied to your editor with status notifications
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Formatting doesn't work
 
@@ -87,11 +92,11 @@ Add to your VS Code `settings.json`:
 
 Ktlint is stored at: `~/.vscode/globalStorage/rnoro.vscode-ktlint-formatter/ktlint`
 
-## 🤝 Contributing
+## Contributing
 
 Found a bug or have a feature request? Please open an issue on [GitHub](https://github.com/rnoro/vscode-ktlint-formatter/issues).
 
-## 🔌 Recommended Extensions
+## Recommended Extensions
 
 For the best Kotlin development experience in VS Code, use this extension together with:
 
@@ -99,11 +104,11 @@ For the best Kotlin development experience in VS Code, use this extension togeth
   - Provides IntelliSense, code navigation, and refactoring
   - Developed and maintained by JetBrains
 
-## 📝 License
+## License
 
 MIT License - see [LICENSE](LICENSE) for details
 
-## 🔗 Related Resources
+## Related Resources
 
 - [ktlint Official Site](https://pinterest.github.io/ktlint/)
 - [Kotlin Coding Conventions](https://kotlinlang.org/docs/coding-conventions.html)
