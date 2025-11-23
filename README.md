@@ -28,14 +28,6 @@ Or install directly from the [VS Code Marketplace](https://marketplace.visualstu
 code --install-extension rnoro.vscode-ktlint-formatter
 ```
 
-### From GitHub Releases
-
-Alternatively, download the latest `.vsix` file from [Releases](https://github.com/rnoro/vscode-ktlint-formatter/releases) and install it manually:
-
-```bash
-code --install-extension vscode-ktlint-formatter-0.1.0.vsix
-```
-
 ## Usage
 
 ### Manual Formatting

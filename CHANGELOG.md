@@ -2,6 +2,14 @@
 
 All notable changes to the "Ktlint Formatter" extension will be documented in this file.
 
+## [0.1.2] - 2025-11-23
+
+### Fixed
+
+- **Critical Formatting Bug**: Fixed `UnknownFormatConversionException` when formatting code
+- **Stability**: Changed formatting mechanism to use temporary files instead of stdin to avoid ktlint 1.x bugs
+- **Performance**: Implemented asynchronous file I/O for better responsiveness
+
 ## [0.1.1] - 2025-11-23
 
 ### Documentation
