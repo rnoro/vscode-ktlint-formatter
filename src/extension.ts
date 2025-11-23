@@ -37,7 +37,8 @@ export async function activate(context: vscode.ExtensionContext) {
           const formatted = await formatKotlinCode(
             document.getText(),
             ktlintPath,
-            (message) => outputChannel.appendLine(message)
+            (message) => outputChannel.appendLine(message),
+            document.fileName
           );
 
           const fullRange = new vscode.Range(
