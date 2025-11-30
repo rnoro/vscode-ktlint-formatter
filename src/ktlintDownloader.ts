@@ -5,25 +5,9 @@ import * as https from "https";
 import * as os from "os";
 
 const KTLINT_VERSION = "1.8.0";
-const KTLINT_BASE_URL = `https://github.com/pinterest/ktlint/releases/download/${KTLINT_VERSION}`;
+const KTLINT_URL = `https://github.com/pinterest/ktlint/releases/download/${KTLINT_VERSION}/ktlint`;
 
 export const isWindows = os.platform() === "win32";
-
-/**
- * Get the appropriate ktlint URL and filename based on platform
- */
-function getKtlintDownloadInfo(): { url: string; filename: string } {
-  if (isWindows) {
-    return {
-      url: `${KTLINT_BASE_URL}/ktlint.bat`,
-      filename: "ktlint.bat",
-    };
-  }
-  return {
-    url: `${KTLINT_BASE_URL}/ktlint`,
-    filename: "ktlint",
-  };
-}
 
 /**
  * Ensure ktlint binary exists. Downloads it if not present.
@@ -35,8 +19,7 @@ export async function ensureKtlintExists(
   context: vscode.ExtensionContext
 ): Promise<string> {
   const storageDir = context.globalStorageUri.fsPath;
-  const { filename } = getKtlintDownloadInfo();
-  const ktlintPath = path.join(storageDir, filename);
+  const ktlintPath = path.join(storageDir, "ktlint");
 
   // Return if already exists
   if (fs.existsSync(ktlintPath)) {
@@ -63,8 +46,6 @@ export async function downloadKtlint(
     fs.mkdirSync(storageDir, { recursive: true });
   }
 
-  const { url } = getKtlintDownloadInfo();
-
   await vscode.window.withProgress(
     {
       location: vscode.ProgressLocation.Notification,
@@ -73,7 +54,7 @@ export async function downloadKtlint(
     },
     async (progress) => {
       progress.report({ increment: 0, message: "Starting download" });
-      await downloadFile(url, ktlintPath, progress);
+      await downloadFile(KTLINT_URL, ktlintPath, progress);
     }
   );
 }
