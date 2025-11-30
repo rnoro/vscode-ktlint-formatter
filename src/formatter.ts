@@ -3,6 +3,7 @@ import * as fs from "fs";
 import * as os from "os";
 import * as path from "path";
 import * as crypto from "crypto";
+import { isWindows } from "./ktlintDownloader";
 
 /**
  * Format Kotlin code using ktlint.
@@ -40,6 +41,7 @@ export async function formatKotlinCode(
         ["--format", "--log-level=error", tempFilePath],
         {
           stdio: ["ignore", "pipe", "pipe"],
+          shell: isWindows,
         }
       );
 

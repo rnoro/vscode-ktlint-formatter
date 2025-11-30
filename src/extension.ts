@@ -1,5 +1,4 @@
 import * as vscode from "vscode";
-import * as path from "path";
 import { ensureKtlintExists } from "./ktlintDownloader";
 import { formatKotlinCode } from "./formatter";
 
@@ -30,10 +29,7 @@ export async function activate(context: vscode.ExtensionContext) {
         document: vscode.TextDocument
       ): Promise<vscode.TextEdit[]> {
         try {
-          const ktlintPath = path.join(
-            context.globalStorageUri.fsPath,
-            "ktlint"
-          );
+          const ktlintPath = await ensureKtlintExists(context);
           const formatted = await formatKotlinCode(
             document.getText(),
             ktlintPath,
