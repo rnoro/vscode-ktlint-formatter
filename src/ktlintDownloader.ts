@@ -5,7 +5,7 @@ import * as https from "https";
 import * as os from "os";
 
 const KTLINT_VERSION = "1.8.0";
-const KTLINT_URL = `https://github.com/pinterest/ktlint/releases/download/${KTLINT_VERSION}/ktlint`;
+const KTLINT_BASE_URL = `https://github.com/pinterest/ktlint/releases/download/${KTLINT_VERSION}`;
 
 export const isWindows = os.platform() === "win32";
 
@@ -19,16 +19,28 @@ export async function ensureKtlintExists(
   context: vscode.ExtensionContext
 ): Promise<string> {
   const storageDir = context.globalStorageUri.fsPath;
-  const ktlintPath = path.join(storageDir, "ktlint");
 
-  // Return if already exists
-  if (fs.existsSync(ktlintPath)) {
+  if (isWindows) {
+    // Windows: Download both ktlint.bat and ktlint (JAR)
+    const batPath = path.join(storageDir, "ktlint.bat");
+    const jarPath = path.join(storageDir, "ktlint");
+
+    // Check if both files exist
+    if (!fs.existsSync(batPath) || !fs.existsSync(jarPath)) {
+      await downloadKtlintForWindows(storageDir, batPath, jarPath);
+    }
+
+    return batPath;
+  } else {
+    // Unix/Mac: Download ktlint only
+    const ktlintPath = path.join(storageDir, "ktlint");
+
+    if (!fs.existsSync(ktlintPath)) {
+      await downloadKtlint(storageDir, ktlintPath);
+    }
+
     return ktlintPath;
   }
-
-  // Download if needed
-  await downloadKtlint(storageDir, ktlintPath);
-  return ktlintPath;
 }
 
 /**
@@ -54,7 +66,42 @@ export async function downloadKtlint(
     },
     async (progress) => {
       progress.report({ increment: 0, message: "Starting download" });
-      await downloadFile(KTLINT_URL, ktlintPath, progress);
+      await downloadFile(`${KTLINT_BASE_URL}/ktlint`, ktlintPath, progress);
+    }
+  );
+}
+
+/**
+ * Download ktlint for Windows (both .bat wrapper and ktlint JAR).
+ *
+ * @param storageDir - Directory to store the files
+ * @param batPath - Full path where ktlint.bat will be saved
+ * @param jarPath - Full path where ktlint (JAR) will be saved
+ */
+async function downloadKtlintForWindows(
+  storageDir: string,
+  batPath: string,
+  jarPath: string
+): Promise<void> {
+  // Create storage directory if it doesn't exist
+  if (!fs.existsSync(storageDir)) {
+    fs.mkdirSync(storageDir, { recursive: true });
+  }
+
+  await vscode.window.withProgress(
+    {
+      location: vscode.ProgressLocation.Notification,
+      title: "Downloading ktlint for Windows...",
+      cancellable: false,
+    },
+    async (progress) => {
+      // Download ktlint.bat
+      progress.report({ increment: 0, message: "Downloading ktlint.bat..." });
+      await downloadFile(`${KTLINT_BASE_URL}/ktlint.bat`, batPath, progress);
+
+      // Download ktlint (JAR)
+      progress.report({ increment: 50, message: "Downloading ktlint..." });
+      await downloadFile(`${KTLINT_BASE_URL}/ktlint`, jarPath, progress);
     }
   );
 }

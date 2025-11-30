@@ -35,6 +35,7 @@ export async function formatKotlinCode(
     // Execute ktlint on the temp file
     // Using --format to modify the file in place
     // Using --log-level=error to suppress INFO logs
+    // On Windows, use shell to execute .jar files
     await new Promise<void>((resolve, reject) => {
       const process = child_process.spawn(
         ktlintPath,
