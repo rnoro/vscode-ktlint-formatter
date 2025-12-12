@@ -2,6 +2,20 @@
 
 All notable changes to the "Ktlint Formatter" extension will be documented in this file.
 
+## [0.1.6] - 2025-12-12
+
+### Added
+
+- **Testing Infrastructure**: Implemented Mocha testing framework for automated testing
+- **CI/CD Pipeline**: Added GitHub Actions workflow for continuous integration on Windows, Linux, and macOS
+- **Test Suite**: Created comprehensive test suite to validate Kotlin code formatting functionality
+- **Test Coverage**: Added test case for verifying function signature spacing fixes
+
+### Fixed
+
+- **File Name Validation**: Fixed PascalCase naming validation for temporary files
+- **Formatter**: Removed random identifier from temporary file names to maintain original file naming conventions
+
 ## [0.1.5] - 2025-11-30
 
 ### Improved
