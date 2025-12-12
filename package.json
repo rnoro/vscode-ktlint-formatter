@@ -2,7 +2,7 @@
   "name": "vscode-ktlint-formatter",
   "displayName": "Kotlin Ktlint Formatter",
   "description": "Kotlin formatter using ktlint with zero configuration",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "publisher": "rnoro",
   "icon": "icon.png",
   "engines": {

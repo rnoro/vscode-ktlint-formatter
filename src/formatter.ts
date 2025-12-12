@@ -20,9 +20,10 @@ export async function formatKotlinCode(
   fileName: string = "temp.kt"
 ): Promise<string> {
   // Create a temporary file to avoid stdin issues and ensure correct file extension handling
-  const tempDir = os.tmpdir();
+  // Use a unique temporary directory for each formatting request to prevent file collisions
+  const uniqueTempDir = await fs.promises.mkdtemp(path.join(os.tmpdir(), 'ktlint-'));
   const extension = path.extname(fileName) || ".kt";
-  const tempFilePath = path.join(tempDir, path.parse(fileName).name + extension);
+  const tempFilePath = path.join(uniqueTempDir, path.basename(fileName));
 
   try {
     logger(`Running ktlint: ${ktlintPath} on ${tempFilePath}`);
@@ -100,13 +101,13 @@ export async function formatKotlinCode(
   } catch (error) {
     throw new Error(`Error formatting code: ${error}`);
   } finally {
-    // Cleanup temp file asynchronously
-    if (fs.existsSync(tempFilePath)) {
-      try {
-        await fs.promises.unlink(tempFilePath);
-      } catch (e) {
-        logger(`Failed to delete temp file: ${e}`);
+    // Cleanup temp directory and file asynchronously
+    try {
+      if (fs.existsSync(uniqueTempDir)) {
+        await fs.promises.rm(uniqueTempDir, { recursive: true, force: true });
       }
+    } catch (e) {
+      logger(`Failed to cleanup temp directory: ${e}`);
     }
   }
 }

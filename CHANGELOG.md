@@ -2,6 +2,13 @@
 
 All notable changes to the "Ktlint Formatter" extension will be documented in this file.
 
+## [0.1.7] - 2025-12-12
+
+### Fixed
+
+- **Concurrency**: Fixed critical bug where concurrent formatting requests could overwrite each other's temporary files
+- **Stability**: Use unique temporary directories for each formatting operation to prevent file collisions
+
 ## [0.1.6] - 2025-12-12
 
 ### Added
