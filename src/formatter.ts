@@ -21,8 +21,9 @@ export async function formatKotlinCode(
 ): Promise<string> {
   // Create a temporary file to avoid stdin issues and ensure correct file extension handling
   // Use a unique temporary directory for each formatting request to prevent file collisions
-  const uniqueTempDir = await fs.promises.mkdtemp(path.join(os.tmpdir(), 'ktlint-'));
-  const extension = path.extname(fileName) || ".kt";
+  const uniqueTempDir = await fs.promises.mkdtemp(
+    path.join(os.tmpdir(), "ktlint-")
+  );
   const tempFilePath = path.join(uniqueTempDir, path.basename(fileName));
 
   try {
