@@ -2,10 +2,12 @@ import * as vscode from "vscode";
 import * as path from "path";
 import * as fs from "fs";
 import * as https from "https";
+import * as http from "http";
 import * as os from "os";
 
 const KTLINT_VERSION = "1.8.0";
 const KTLINT_BASE_URL = `https://github.com/pinterest/ktlint/releases/download/${KTLINT_VERSION}`;
+const MAX_REDIRECTS = 5;
 
 export const isWindows = os.platform() === "win32";
 
@@ -112,11 +114,17 @@ async function downloadKtlintForWindows(
 function downloadFile(
   url: string,
   destPath: string,
-  progress: vscode.Progress<{ message?: string; increment?: number }>
+  progress: vscode.Progress<{ message?: string; increment?: number }>,
+  redirectCount = 0
 ): Promise<void> {
   return new Promise((resolve, reject) => {
-    const file = fs.createWriteStream(destPath);
-    const request = https.get(url, (response) => {
+    if (redirectCount > MAX_REDIRECTS) {
+      reject(new Error(`Too many redirects while downloading: ${url}`));
+      return;
+    }
+
+    const client = getHttpClient(url);
+    const request = client.get(url, (response) => {
       // Handle redirects
       if (
         response.statusCode === 301 ||
@@ -125,17 +133,22 @@ function downloadFile(
         response.statusCode === 308
       ) {
         const redirectUrl = response.headers.location;
-        if (redirectUrl) {
-          file.close();
-          downloadFile(redirectUrl, destPath, progress)
-            .then(resolve)
-            .catch(reject);
+        response.resume();
+
+        if (!redirectUrl) {
+          reject(new Error(`Redirect response missing Location header: ${url}`));
           return;
         }
+
+        const resolvedRedirectUrl = resolveRedirectUrl(url, redirectUrl);
+        downloadFile(resolvedRedirectUrl, destPath, progress, redirectCount + 1)
+          .then(resolve)
+          .catch(reject);
+        return;
       }
 
       if (response.statusCode !== 200) {
-        file.close();
+        response.resume();
         fs.unlink(destPath, () => {}); // Delete partial file
         reject(
           new Error(`Download failed with status code: ${response.statusCode}`)
@@ -143,6 +156,7 @@ function downloadFile(
         return;
       }
 
+      const file = fs.createWriteStream(destPath);
       const totalSize = parseInt(response.headers["content-length"] || "0", 10);
       let downloadedSize = 0;
 
@@ -179,9 +193,17 @@ function downloadFile(
     });
 
     request.on("error", (err) => {
-      file.close();
       fs.unlink(destPath, () => {}); // Delete partial file
       reject(err);
     });
   });
+}
+
+export function resolveRedirectUrl(baseUrl: string, redirectUrl: string): string {
+  return new URL(redirectUrl, baseUrl).toString();
+}
+
+function getHttpClient(url: string): typeof http | typeof https {
+  const protocol = new URL(url).protocol;
+  return protocol === "http:" ? http : https;
 }
