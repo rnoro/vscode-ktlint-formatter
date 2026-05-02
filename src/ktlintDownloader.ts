@@ -4,8 +4,7 @@ import * as fs from "fs";
 import * as https from "https";
 import * as os from "os";
 
-const KTLINT_VERSION = "1.8.0";
-const KTLINT_BASE_URL = `https://github.com/pinterest/ktlint/releases/download/${KTLINT_VERSION}`;
+const DEFAULT_KTLINT_VERSION = "1.8.0";
 
 export const isWindows = os.platform() === "win32";
 
@@ -18,25 +17,29 @@ export const isWindows = os.platform() === "win32";
 export async function ensureKtlintExists(
   context: vscode.ExtensionContext
 ): Promise<string> {
+  const config = vscode.workspace.getConfiguration("ktlint");
+  const version = config.get<string>("version") || DEFAULT_KTLINT_VERSION;
+  const baseUrl = `https://github.com/pinterest/ktlint/releases/download/${version}`;
   const storageDir = context.globalStorageUri.fsPath;
+  const versionDir = path.join(storageDir, version);
 
   if (isWindows) {
     // Windows: Download both ktlint.bat and ktlint (JAR)
-    const batPath = path.join(storageDir, "ktlint.bat");
-    const jarPath = path.join(storageDir, "ktlint");
+    const batPath = path.join(versionDir, "ktlint.bat");
+    const jarPath = path.join(versionDir, "ktlint");
 
     // Check if both files exist
     if (!fs.existsSync(batPath) || !fs.existsSync(jarPath)) {
-      await downloadKtlintForWindows(storageDir, batPath, jarPath);
+      await downloadKtlintForWindows(versionDir, batPath, jarPath, baseUrl);
     }
 
     return batPath;
   } else {
     // Unix/Mac: Download ktlint only
-    const ktlintPath = path.join(storageDir, "ktlint");
+    const ktlintPath = path.join(versionDir, "ktlint");
 
     if (!fs.existsSync(ktlintPath)) {
-      await downloadKtlint(storageDir, ktlintPath);
+      await downloadKtlint(versionDir, ktlintPath, baseUrl);
     }
 
     return ktlintPath;
@@ -51,7 +54,8 @@ export async function ensureKtlintExists(
  */
 export async function downloadKtlint(
   storageDir: string,
-  ktlintPath: string
+  ktlintPath: string,
+  baseUrl: string
 ): Promise<void> {
   // Create storage directory if it doesn't exist
   if (!fs.existsSync(storageDir)) {
@@ -66,7 +70,7 @@ export async function downloadKtlint(
     },
     async (progress) => {
       progress.report({ increment: 0, message: "Starting download" });
-      await downloadFile(`${KTLINT_BASE_URL}/ktlint`, ktlintPath, progress);
+      await downloadFile(`${baseUrl}/ktlint`, ktlintPath, progress);
     }
   );
 }
@@ -81,7 +85,8 @@ export async function downloadKtlint(
 async function downloadKtlintForWindows(
   storageDir: string,
   batPath: string,
-  jarPath: string
+  jarPath: string,
+  baseUrl: string
 ): Promise<void> {
   // Create storage directory if it doesn't exist
   if (!fs.existsSync(storageDir)) {
@@ -97,11 +102,11 @@ async function downloadKtlintForWindows(
     async (progress) => {
       // Download ktlint.bat
       progress.report({ increment: 0, message: "Downloading ktlint.bat..." });
-      await downloadFile(`${KTLINT_BASE_URL}/ktlint.bat`, batPath, progress);
+      await downloadFile(`${baseUrl}/ktlint.bat`, batPath, progress);
 
       // Download ktlint (JAR)
       progress.report({ increment: 50, message: "Downloading ktlint..." });
-      await downloadFile(`${KTLINT_BASE_URL}/ktlint`, jarPath, progress);
+      await downloadFile(`${baseUrl}/ktlint`, jarPath, progress);
     }
   );
 }

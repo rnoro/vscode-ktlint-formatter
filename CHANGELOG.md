@@ -2,6 +2,12 @@
 
 All notable changes to the "Ktlint Formatter" extension will be documented in this file.
 
+## [0.1.8] - upcoming
+
+### Added
+
+- **Configurable ktlint Version**: Added ktlint.version setting (default 1.8.0) allowing users to specify which ktlint version to download and use.
+
 ## [0.1.7] - 2025-12-12
 
 ### Fixed
