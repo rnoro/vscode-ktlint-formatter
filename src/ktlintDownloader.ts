@@ -162,12 +162,13 @@ function downloadFile(
 
       response.pipe(file);
 
-      file.on("finish", () => {
+      file.on("finish", async () => {
         file.close();
         // Make executable (skip on Windows)
         try {
           if (!isWindows) {
             fs.chmodSync(destPath, 0o755);
+            await setTimeout(() => {}, 100); // Ensure chmod takes effect before resolving
           }
         } catch (e) {
           // Ignore chmod errors

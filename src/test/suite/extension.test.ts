@@ -38,7 +38,7 @@ suite("Extension Test Suite", () => {
 
 	test("Format Kotlin file", async function () {
 		await vscode.commands.executeCommand("editor.action.formatDocument");
-		await sleep(2000);
+		await sleep(1000);
 		const formattedText = editor.document.getText();
 		assert.ok(
 			formattedText.includes(`fun main()`),
@@ -49,24 +49,14 @@ suite("Extension Test Suite", () => {
 
 	test("Format Kotlin file with custom ktlint version", async function () {
 		const config = vscode.workspace.getConfiguration("ktlint");
-		const originalVersion = config.get<string>("version");
-		
-		try {
-			await config.update("version", "1.7.0", vscode.ConfigurationTarget.Global);
-			await sleep(1000);
-			
-			await vscode.commands.executeCommand("editor.action.formatDocument");
-			await sleep(3000);
-			
-			const formattedText = editor.document.getText();
-			assert.ok(
-				formattedText.includes(`fun main()`),
-				"Formatter failed with custom version"
-			);
-		} finally {
-			if (originalVersion) {
-				await config.update("version", originalVersion, vscode.ConfigurationTarget.Global);
-			}
-		}
+		await config.update("version", "1.7.0", vscode.ConfigurationTarget.Global);
+		await sleep(1000);
+		await vscode.commands.executeCommand("editor.action.formatDocument");
+		await sleep(1000);
+		const formattedText = editor.document.getText();
+		assert.ok(
+			formattedText.includes(`fun main()`),
+			"Formatter failed with custom version"
+		);
 	});
 });
