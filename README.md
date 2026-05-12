@@ -5,7 +5,7 @@ A zero-configuration VS Code extension that formats Kotlin code using ktlint. No
 ## Features
 
 - **Zero Configuration**: No ktlint installation or setup needed
-- **Automatic Setup**: Downloads ktlint (v1.8.0) automatically on first use
+- **Automatic Setup**: Downloads ktlint automatically on first use (default v1.8.0)
 - **Native Integration**: Works with VS Code's built-in formatting commands
 - **Kotlin Standard**: Follows the official Kotlin coding conventions
 - **Script Support**: Formats both `.kt` and `.kts` files
@@ -54,6 +54,17 @@ Add to your VS Code `settings.json`:
 }
 ```
 
+### Configuration
+
+You can specify the version of ktlint to use in your `settings.json`:
+
+```json
+{
+  "ktlint.version": "1.8.0"
+}
+```
+
+
 ## Requirements
 
 - **VS Code**: 1.85.0 or later
@@ -62,7 +73,7 @@ Add to your VS Code `settings.json`:
 ## How It Works
 
 1. Extension activates when you open a Kotlin file
-2. On first use, ktlint binary (v1.8.0) is downloaded automatically
+2. On first use, ktlint binary is downloaded automatically (configurable version, defaults to v1.8.0)
 3. Formatting requests are processed through ktlint
 4. Results are applied to your editor with status notifications
 
