@@ -2,7 +2,7 @@
   "name": "vscode-ktlint-formatter",
   "displayName": "Kotlin Ktlint Formatter",
   "description": "Kotlin formatter using ktlint with zero configuration",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "publisher": "rnoro",
   "icon": "icon.png",
   "engines": {
@@ -22,18 +22,17 @@
     "onLanguage:kotlin-script"
   ],
   "main": "./dist/extension.js",
-    "contributes": {
-      "configuration": {
-        "properties": {
-          "ktlint.version": {
-            "type": "string",
-            "default": "1.8.0",
-            "description": "Version of ktlint to use"
-          }
+  "contributes": {
+    "configuration": {
+      "properties": {
+        "ktlint.version": {
+          "type": "string",
+          "default": "1.8.0",
+          "description": "Version of ktlint to use"
         }
-      },
-      "languages": [
-
+      }
+    },
+    "languages": [
       {
         "id": "kotlin",
         "extensions": [
